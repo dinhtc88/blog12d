@@ -2,6 +2,7 @@ from pathlib import Path
 import os
 
 import dj_database_url
+from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -56,6 +57,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
+load_dotenv()
 # Đã loại bỏ hoàn toàn 'charset' của MySQL, thay bằng 'client_encoding' của PostgreSQL
 DATABASES = {
     'default': dj_database_url.config(
