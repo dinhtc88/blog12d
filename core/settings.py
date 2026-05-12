@@ -57,11 +57,11 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # Đã loại bỏ hoàn toàn 'charset' của MySQL, thay bằng 'client_encoding' của PostgreSQL
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'postgresql://blog12d_db_user:U8v59yzBwHe5O4954eOfSb5TZ0phz58j@dpg-d81i68navr4c73be3omg-a/blog12d_db',
         'NAME': 'blog12d_db',
-        'USER': 'postgres',     # Sửa user PostgreSQL trên máy bạn nếu khác
-        'PASSWORD': '12345678', # Sửa password PostgreSQL trên máy bạn nếu khác
-        'HOST': '127.0.0.1',
+        'USER': 'blog12d_db_user',     # Sửa user PostgreSQL trên máy bạn nếu khác
+        'PASSWORD': 'U8v59yzBwHe5O4954eOfSb5TZ0phz58j', # Sửa password PostgreSQL trên máy bạn nếu khác
+        'HOST': 'dpg-d81i68navr4c73be3omg-a',
         'PORT': '5432',         # Port mặc định của Postgres
         'OPTIONS': {
             'client_encoding': 'UTF8',
