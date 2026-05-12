@@ -1,0 +1,4 @@
+.env/
+__pycache__/
+migrations/
+1.4.2
