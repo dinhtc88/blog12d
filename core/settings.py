@@ -1,6 +1,8 @@
 from pathlib import Path
 import os
 
+import dj_database_url
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-test-key-please-change-in-production'
@@ -56,17 +58,11 @@ WSGI_APPLICATION = 'core.wsgi.application'
 
 # Đã loại bỏ hoàn toàn 'charset' của MySQL, thay bằng 'client_encoding' của PostgreSQL
 DATABASES = {
-    'default': {
-        'ENGINE': 'postgresql://blog12d_db_user:U8v59yzBwHe5O4954eOfSb5TZ0phz58j@dpg-d81i68navr4c73be3omg-a/blog12d_db',
-        'NAME': 'blog12d_db',
-        'USER': 'blog12d_db_user',     # Sửa user PostgreSQL trên máy bạn nếu khác
-        'PASSWORD': 'U8v59yzBwHe5O4954eOfSb5TZ0phz58j', # Sửa password PostgreSQL trên máy bạn nếu khác
-        'HOST': 'dpg-d81i68navr4c73be3omg-a',
-        'PORT': '5432',         # Port mặc định của Postgres
-        'OPTIONS': {
-            'client_encoding': 'UTF8',
-        },
-    }
+    'default': dj_database_url.config(
+        default=os.environ.get('DATABASE_URL'),
+        conn_max_age=600,
+        ssl_require=True  # Render cần SSL
+    )
 }
 
 AUTH_PASSWORD_VALIDATORS = [
