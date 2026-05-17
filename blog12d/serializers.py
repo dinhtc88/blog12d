@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import MemoryPost, Comment, FundTransaction, CalendarEvent, Notification, UserProfile
+from .models import MemoryPost, Comment, FundTransaction, CalendarEvent, Notification, UserProfile, LoginHistory
 
 class UserSerializer(serializers.ModelSerializer):
     displayName = serializers.CharField(source='userprofile.display_name', read_only=True, allow_null=True)
@@ -132,3 +132,12 @@ class CalendarEventSerializer(serializers.ModelSerializer):
     class Meta:
         model = CalendarEvent
         fields = ['id', 'title', 'date', 'type', 'location', 'description']
+
+class LoginHistorySerializer(serializers.ModelSerializer):
+    displayName = serializers.CharField(source='user.display_name', read_only=True)
+    username = serializers.CharField(source='user.uid', read_only=True)
+    timestamp = serializers.DateTimeField(read_only=True)
+
+    class Meta:
+        model = LoginHistory
+        fields = ['id', 'user', 'displayName', 'username', 'ip_address', 'user_agent', 'timestamp']

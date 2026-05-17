@@ -2,11 +2,13 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import viewsets, permissions
-from .models import UserProfile, MemoryPost, Comment, CalendarEvent, FundTransaction, Notification
+from .models import UserProfile, MemoryPost, Comment, CalendarEvent, FundTransaction, Notification, LoginHistory
 from .serializers import (
     UserProfileSerializer, MemoryPostSerializer, CommentSerializer,
-    CalendarEventSerializer, FundTransactionSerializer, NotificationSerializer
+    CalendarEventSerializer, FundTransactionSerializer, NotificationSerializer, LoginHistorySerializer
 )
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 class UserProfileViewSet(viewsets.ModelViewSet):
     queryset = UserProfile.objects.all()
@@ -80,3 +82,48 @@ class NotificationViewSet(viewsets.ModelViewSet):
         notification.is_read = True
         notification.save()
         return Response({"status": "Thành công"})
+
+class LoginHistoryViewSet(viewsets.ModelViewSet):
+    queryset = LoginHistory.objects.all().order_by('-timestamp')
+    serializer_class = LoginHistorySerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        try:
+            profile = UserProfile.objects.get(uid=user.username)
+            if profile.role == 'admin':
+                return LoginHistory.objects.all().order_by('-timestamp')
+        except UserProfile.DoesNotExist:
+            pass
+        return LoginHistory.objects.none()
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        user = self.user
+        request = self.context.get('request')
+        ip_address = None
+        user_agent = None
+        if request:
+            x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+            if x_forwarded_for:
+                ip_address = x_forwarded_for.split(',')[0].strip()
+            else:
+                ip_address = request.META.get('REMOTE_ADDR')
+            user_agent = request.META.get('HTTP_USER_AGENT')
+        
+        try:
+            profile = UserProfile.objects.get(uid=user.username)
+            LoginHistory.objects.create(
+                user=profile,
+                ip_address=ip_address,
+                user_agent=user_agent
+            )
+        except UserProfile.DoesNotExist:
+            pass
+
+        return data
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer

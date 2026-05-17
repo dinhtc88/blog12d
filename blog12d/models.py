@@ -109,3 +109,13 @@ def create_user_profile(sender, instance, created, **kwargs):
             display_name=instance.username, 
             email=instance.email
         )
+
+class LoginHistory(models.Model):
+    id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='login_history')
+    ip_address = models.GenericIPAddressField(null=True, blank=True)
+    user_agent = models.TextField(null=True, blank=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.display_name} - {self.timestamp}"
