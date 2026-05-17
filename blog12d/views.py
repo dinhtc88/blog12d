@@ -120,7 +120,8 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
                 ip_address=ip_address,
                 user_agent=user_agent
             )
-        except UserProfile.DoesNotExist:
+        except Exception as e:
+            print("Error creating login history:", e)
             pass
 
         return data

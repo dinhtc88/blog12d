@@ -59,6 +59,14 @@ class MemoryPostSerializer(serializers.ModelSerializer):
             mutable_data['authorUid'] = mutable_data['author_uid']
         if 'author_name' in mutable_data and 'authorName' not in mutable_data:
             mutable_data['authorName'] = mutable_data['author_name']
+        if 'event_date' in mutable_data and 'eventDate' not in mutable_data:
+            mutable_data['eventDate'] = mutable_data['event_date']
+        if 'image_url' in mutable_data and 'imageUrl' not in mutable_data:
+            mutable_data['imageUrl'] = mutable_data['image_url']
+        if 'image_urls' in mutable_data and 'imageUrls' not in mutable_data:
+            mutable_data['imageUrls'] = mutable_data['image_urls']
+        if 'liked_by' in mutable_data and 'likedBy' not in mutable_data:
+            mutable_data['likedBy'] = mutable_data['liked_by']
         return super().to_internal_value(mutable_data)
 class CommentSerializer(serializers.ModelSerializer):
     postId = serializers.IntegerField(source='post_id')
