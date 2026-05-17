@@ -67,6 +67,12 @@ class MemoryPostSerializer(serializers.ModelSerializer):
             mutable_data['imageUrls'] = mutable_data['image_urls']
         if 'liked_by' in mutable_data and 'likedBy' not in mutable_data:
             mutable_data['likedBy'] = mutable_data['liked_by']
+            
+        if mutable_data.get('imageUrls') is None:
+            mutable_data['imageUrls'] = []
+        if mutable_data.get('likedBy') is None:
+            mutable_data['likedBy'] = []
+            
         return super().to_internal_value(mutable_data)
 class CommentSerializer(serializers.ModelSerializer):
     postId = serializers.IntegerField(source='post_id')
