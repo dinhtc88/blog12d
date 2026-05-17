@@ -37,6 +37,12 @@ class UserProfileViewSet(viewsets.ModelViewSet):
 class MemoryPostViewSet(viewsets.ModelViewSet):
     queryset = MemoryPost.objects.all().order_by('-created_at')
     serializer_class = MemoryPostSerializer
+    def perform_destroy(self, instance):
+        post_id = str(instance.id)
+        from .models import Notification
+        Notification.objects.filter(target_id=post_id).delete()
+        super().perform_destroy(instance)
+
     @action(detail=True, methods=['post'])
     def like(self, request, pk=None):
         post = self.get_object()
